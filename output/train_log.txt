@@ -1,0 +1,539 @@
+2024-05-11 16:45:43,243 transreid INFO: Saving model in the path :output
+2024-05-11 16:45:43,244 transreid INFO: Namespace(config_file='configs/person/my_vit_clipreid.yml', local_rank=0, opts=[])
+2024-05-11 16:45:43,244 transreid INFO: Loaded configuration file configs/person/my_vit_clipreid.yml
+2024-05-11 16:45:43,244 transreid INFO: 
+MODEL:
+  PRETRAIN_CHOICE: 'imagenet'
+  METRIC_LOSS_TYPE: 'triplet'
+  IF_LABELSMOOTH: 'on'
+  IF_WITH_CENTER: 'no'
+  NAME: 'ViT-B-16'
+  STRIDE_SIZE: [16, 16]
+  ID_LOSS_WEIGHT : 0.25
+  TRIPLET_LOSS_WEIGHT : 1.0
+  I2T_LOSS_WEIGHT : 1.0
+  # SIE_CAMERA: True
+  # SIE_COE : 1.0
+
+INPUT:
+  SIZE_TRAIN: [256, 128]
+  SIZE_TEST: [256, 128]
+  PROB: 0.5 # random horizontal flip
+  RE_PROB: 0.5 # random erasing
+  PADDING: 10
+  PIXEL_MEAN: [0.5, 0.5, 0.5]
+  PIXEL_STD: [0.5, 0.5, 0.5]
+
+DATALOADER:
+  SAMPLER: 'softmax_triplet'
+  NUM_INSTANCE: 4
+  NUM_WORKERS: 8
+
+SOLVER:
+  STAGE1:
+    IMS_PER_BATCH: 64
+    OPTIMIZER_NAME: "Adam"
+    BASE_LR: 0.00035
+    WARMUP_LR_INIT: 0.00001
+    LR_MIN: 1e-6
+    WARMUP_METHOD: 'linear'
+    WEIGHT_DECAY:  1e-4
+    WEIGHT_DECAY_BIAS: 1e-4
+    MAX_EPOCHS: 120
+    CHECKPOINT_PERIOD: 120
+    LOG_PERIOD: 50
+    WARMUP_EPOCHS: 5
+  
+  STAGE2:
+    IMS_PER_BATCH: 64
+    OPTIMIZER_NAME: "Adam"
+    BASE_LR: 0.000005
+    WARMUP_METHOD: 'linear'
+    WARMUP_ITERS: 10
+    WARMUP_FACTOR: 0.1
+    WEIGHT_DECAY:  0.0001
+    WEIGHT_DECAY_BIAS: 0.0001
+    LARGE_FC_LR: False
+    MAX_EPOCHS: 60
+    CHECKPOINT_PERIOD: 60
+    LOG_PERIOD: 50
+    EVAL_PERIOD: 60
+    BIAS_LR_FACTOR: 2
+    
+    STEPS: [30, 50]
+    GAMMA: 0.1
+  
+TEST:
+  EVAL: True
+  IMS_PER_BATCH: 64
+  RE_RANKING: False
+  WEIGHT: 'D:\\CLIP-ReID-Model\\Market1501_clipreid_ViT-B-16_60.pth'
+  NECK_FEAT: 'before'
+  FEAT_NORM: 'yes'
+
+DATASETS:
+   NAMES: 'sysu_mm01'
+   ROOT_DIR: 'E:\\hhj'
+OUTPUT_DIR: 'output'
+
+
+#   NAMES: ('market1501')
+#   ROOT_DIR: ('')
+# OUTPUT_DIR: ''
+
+#   NAMES: ('dukemtmc')
+#   ROOT_DIR: ('')
+# OUTPUT_DIR: ''
+
+#   NAMES: ('occ_duke')
+#   ROOT_DIR: ('')
+# OUTPUT_DIR: ''
+
+#   NAMES: ('msmt17')
+#   ROOT_DIR: ('')
+# OUTPUT_DIR: ''
+
+# CUDA_VISIBLE_DEVICES=3 python train_clipreid.py --config_file configs/person/vit_clipreid.yml
+
+2024-05-11 16:45:43,244 transreid INFO: Running with config:
+DATALOADER:
+  NUM_INSTANCE: 4
+  NUM_WORKERS: 8
+  SAMPLER: softmax_triplet
+DATASETS:
+  NAMES: sysu_mm01
+  ROOT_DIR: E:\\hhj
+INPUT:
+  PADDING: 10
+  PIXEL_MEAN: [0.5, 0.5, 0.5]
+  PIXEL_STD: [0.5, 0.5, 0.5]
+  PROB: 0.5
+  RE_PROB: 0.5
+  SIZE_TEST: [256, 128]
+  SIZE_TRAIN: [256, 128]
+MODEL:
+  ATT_DROP_RATE: 0.0
+  COS_LAYER: False
+  DEVICE: cuda
+  DEVICE_ID: 0
+  DIST_TRAIN: False
+  DROP_OUT: 0.0
+  DROP_PATH: 0.1
+  I2T_LOSS_WEIGHT: 1.0
+  ID_LOSS_TYPE: softmax
+  ID_LOSS_WEIGHT: 0.25
+  IF_LABELSMOOTH: on
+  IF_WITH_CENTER: no
+  LAST_STRIDE: 1
+  METRIC_LOSS_TYPE: triplet
+  NAME: ViT-B-16
+  NECK: bnneck
+  NO_MARGIN: False
+  PRETRAIN_CHOICE: imagenet
+  PRETRAIN_PATH: 
+  SIE_CAMERA: False
+  SIE_COE: 3.0
+  SIE_VIEW: False
+  STRIDE_SIZE: [16, 16]
+  TRANSFORMER_TYPE: None
+  TRIPLET_LOSS_WEIGHT: 1.0
+OUTPUT_DIR: output
+SOLVER:
+  MARGIN: 0.3
+  SEED: 1234
+  STAGE1:
+    BASE_LR: 0.00035
+    CHECKPOINT_PERIOD: 120
+    COSINE_MARGIN: 0.5
+    COSINE_SCALE: 30
+    EVAL_PERIOD: 10
+    IMS_PER_BATCH: 64
+    LOG_PERIOD: 50
+    LR_MIN: 1e-06
+    MAX_EPOCHS: 120
+    MOMENTUM: 0.9
+    OPTIMIZER_NAME: Adam
+    WARMUP_EPOCHS: 5
+    WARMUP_FACTOR: 0.01
+    WARMUP_ITERS: 500
+    WARMUP_LR_INIT: 1e-05
+    WARMUP_METHOD: linear
+    WEIGHT_DECAY: 0.0001
+    WEIGHT_DECAY_BIAS: 0.0001
+  STAGE2:
+    BASE_LR: 5e-06
+    BIAS_LR_FACTOR: 2
+    CENTER_LOSS_WEIGHT: 0.0005
+    CENTER_LR: 0.5
+    CHECKPOINT_PERIOD: 60
+    COSINE_MARGIN: 0.5
+    COSINE_SCALE: 30
+    EVAL_PERIOD: 60
+    GAMMA: 0.1
+    IMS_PER_BATCH: 64
+    LARGE_FC_LR: False
+    LOG_PERIOD: 50
+    LR_MIN: 1.6e-05
+    MAX_EPOCHS: 60
+    MOMENTUM: 0.9
+    OPTIMIZER_NAME: Adam
+    STEPS: (30, 50)
+    WARMUP_EPOCHS: 5
+    WARMUP_FACTOR: 0.1
+    WARMUP_ITERS: 10
+    WARMUP_LR_INIT: 0.01
+    WARMUP_METHOD: linear
+    WEIGHT_DECAY: 0.0001
+    WEIGHT_DECAY_BIAS: 0.0001
+TEST:
+  DIST_MAT: dist_mat.npy
+  EVAL: True
+  FEAT_NORM: yes
+  IMS_PER_BATCH: 64
+  NECK_FEAT: before
+  RE_RANKING: False
+  WEIGHT: D:\\CLIP-ReID-Model\\Market1501_clipreid_ViT-B-16_60.pth
+config_file: configs/person/vit_clipreid.yml
+2024-05-11 16:45:46,792 transreid.train INFO: start training
+2024-05-11 16:45:46,799 transreid.train INFO: model: build_transformer(
+  (classifier): Linear(in_features=768, out_features=395, bias=False)
+  (classifier_proj): Linear(in_features=512, out_features=395, bias=False)
+  (bottleneck): BatchNorm1d(768, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (bottleneck_proj): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (image_encoder): VisionTransformer(
+    (conv1): Conv2d(3, 768, kernel_size=(16, 16), stride=(16, 16), bias=False)
+    (ln_pre): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+    (transformer): Transformer(
+      (resblocks): Sequential(
+        (0): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (1): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (2): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (3): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (4): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (5): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (6): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (7): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (8): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (9): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (10): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+        (11): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=768, out_features=768, bias=True)
+          )
+          (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+          )
+          (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+    )
+    (ln_post): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+  )
+  (prompt_learner): PromptLearner()
+  (text_encoder): TextEncoder(
+    (transformer): Transformer(
+      (resblocks): Sequential(
+        (0): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (1): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (2): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (3): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (4): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (5): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (6): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (7): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (8): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (9): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (10): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+        (11): ResidualAttentionBlock(
+          (attn): MultiheadAttention(
+            (out_proj): _LinearWithBias(in_features=512, out_features=512, bias=True)
+          )
+          (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          (mlp): Sequential(
+            (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+            (gelu): QuickGELU()
+            (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+          )
+          (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+    )
+    (ln_final): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+  )
+)
+2024-05-11 16:47:48,474 transreid.train INFO: Epoch[1] Iteration[50/534] Loss: 10.703, Base Lr: 7.80e-05
+2024-05-11 16:47:53,918 transreid.train INFO: Epoch[1] Iteration[100/534] Loss: 9.768, Base Lr: 7.80e-05
+2024-05-11 16:47:59,611 transreid.train INFO: Epoch[1] Iteration[150/534] Loss: 9.122, Base Lr: 7.80e-05
+2024-05-11 16:48:05,079 transreid.train INFO: Epoch[1] Iteration[200/534] Loss: 8.663, Base Lr: 7.80e-05
+2024-05-11 16:48:10,471 transreid.train INFO: Epoch[1] Iteration[250/534] Loss: 8.302, Base Lr: 7.80e-05
+2024-05-11 16:48:15,911 transreid.train INFO: Epoch[1] Iteration[300/534] Loss: 7.967, Base Lr: 7.80e-05
+2024-05-11 16:48:21,455 transreid.train INFO: Epoch[1] Iteration[350/534] Loss: 7.677, Base Lr: 7.80e-05
+2024-05-11 16:48:26,933 transreid.train INFO: Epoch[1] Iteration[400/534] Loss: 7.425, Base Lr: 7.80e-05
+2024-05-11 16:48:32,400 transreid.train INFO: Epoch[1] Iteration[450/534] Loss: 7.217, Base Lr: 7.80e-05
+2024-05-11 16:48:37,838 transreid.train INFO: Epoch[1] Iteration[500/534] Loss: 7.021, Base Lr: 7.80e-05
+2024-05-11 16:48:46,980 transreid.train INFO: Epoch[2] Iteration[50/534] Loss: 4.898, Base Lr: 1.46e-04
+2024-05-11 16:48:52,379 transreid.train INFO: Epoch[2] Iteration[100/534] Loss: 4.896, Base Lr: 1.46e-04
+2024-05-11 16:48:57,852 transreid.train INFO: Epoch[2] Iteration[150/534] Loss: 4.892, Base Lr: 1.46e-04
+2024-05-11 16:49:03,276 transreid.train INFO: Epoch[2] Iteration[200/534] Loss: 4.824, Base Lr: 1.46e-04
+2024-05-11 16:49:08,859 transreid.train INFO: Epoch[2] Iteration[250/534] Loss: 4.749, Base Lr: 1.46e-04
+2024-05-11 16:49:14,327 transreid.train INFO: Epoch[2] Iteration[300/534] Loss: 4.657, Base Lr: 1.46e-04
+2024-05-11 16:49:19,805 transreid.train INFO: Epoch[2] Iteration[350/534] Loss: 4.572, Base Lr: 1.46e-04
+2024-05-11 16:49:25,320 transreid.train INFO: Epoch[2] Iteration[400/534] Loss: 4.501, Base Lr: 1.46e-04
+2024-05-11 16:49:30,848 transreid.train INFO: Epoch[2] Iteration[450/534] Loss: 4.424, Base Lr: 1.46e-04
+2024-05-11 16:49:36,304 transreid.train INFO: Epoch[2] Iteration[500/534] Loss: 4.359, Base Lr: 1.46e-04
+2024-05-11 16:49:45,530 transreid.train INFO: Epoch[3] Iteration[50/534] Loss: 3.445, Base Lr: 2.14e-04
+2024-05-11 16:49:51,112 transreid.train INFO: Epoch[3] Iteration[100/534] Loss: 3.469, Base Lr: 2.14e-04
+2024-05-11 16:49:56,626 transreid.train INFO: Epoch[3] Iteration[150/534] Loss: 3.513, Base Lr: 2.14e-04
+2024-05-11 16:50:02,099 transreid.train INFO: Epoch[3] Iteration[200/534] Loss: 3.513, Base Lr: 2.14e-04
+2024-05-11 16:50:07,573 transreid.train INFO: Epoch[3] Iteration[250/534] Loss: 3.497, Base Lr: 2.14e-04
+2024-05-11 16:50:13,088 transreid.train INFO: Epoch[3] Iteration[300/534] Loss: 3.482, Base Lr: 2.14e-04
+2024-05-11 16:50:18,432 transreid.train INFO: Epoch[3] Iteration[350/534] Loss: 3.460, Base Lr: 2.14e-04
+2024-05-11 16:50:23,760 transreid.train INFO: Epoch[3] Iteration[400/534] Loss: 3.425, Base Lr: 2.14e-04
+2024-05-11 16:50:29,068 transreid.train INFO: Epoch[3] Iteration[450/534] Loss: 3.397, Base Lr: 2.14e-04
+2024-05-11 16:50:34,384 transreid.train INFO: Epoch[3] Iteration[500/534] Loss: 3.369, Base Lr: 2.14e-04
+2024-05-11 16:50:43,296 transreid.train INFO: Epoch[4] Iteration[50/534] Loss: 2.916, Base Lr: 2.82e-04
